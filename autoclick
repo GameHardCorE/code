@@ -37,7 +37,7 @@ LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WParam wParam, LParam lParam) {
 
                         if running == 0)
                         {
-                            printf("Autoclick começou aperte F8 para parar. \n");
+                            printf("Autoclick comecou aperte F8 para parar. \n");
                             running = 1;
                             thread = CreateThread(NULL, 0, MyTHreadFunction, &running, 0, &tid);
                             
