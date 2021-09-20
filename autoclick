@@ -1,0 +1,73 @@
+#include <Windows.h>
+#include <stdio.h>
+
+int running = false;
+DWORD tid = 0;
+HANDLE thread;
+
+void mouseclick(void)
+{
+    mouse_event(MOUSEEVENT_LEFTDOWN, 0, 0, 0, 0);
+    mouse_event(MOUSEEVENT_LEFTUP, 0, 0, 0, 0);
+}
+
+DWORD WINAP MyTHreadFunction(LPVOID lpParam) {
+    int* r = (int*)lpParam;
+    while (*r)
+    {
+        mouseclick();
+        Sleep(100);
+    }
+    return 0;
+}
+LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WParam wParam, LParam lParam) {
+    bool fEatKeyStroke = false;
+
+    if (ncode == HC_ACTION)
+    {
+        switch (wParam)
+        {
+            case WM_KEYDOWM:
+            case WM_SYSKEYDOWM:
+            case WM_KEYUP:
+            case WM_SYSKEYUP:
+                PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
+                if (fEatKeyStroke = (p->vkCode == VK_F8)  {
+                    if (wParam == WM_KEYDOWM || wParam == WM_SYSKEYDOWM) {
+
+                        if running == 0)
+                        {
+                            printf("Autoclick começou aperte F8 para parar. \n");
+                            running = 1;
+                            thread = CreateThread(NULL, 0, MyTHreadFunction, &running, 0, &tid);
+                            
+                        }
+                    }
+                    else if (wParam == WM_KEYUP || WParam == WM_SYSKEYUP) {
+                        // nothing
+                    }
+                    break;
+                }
+                break;
+        }
+
+    }
+    return (fEatKeyStroke ? 1 : CallNextHookEx(NULL, nCode, wParam, lParam));
+}
+
+int main (void)
+{
+    HHOOK hhkLowLevelKybd = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, 0, 0);
+    MSG msg;
+
+    while (!GetMessage(&msg, NULL, NULL, NULL))
+    {
+     TranslateMessage(&msg);
+     DispatchMessage(&msg);
+
+    }
+
+    UnhookWindowsHookEx(hhkLowLevelKybd);
+    return 0;
+    
+}
